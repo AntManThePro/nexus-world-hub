@@ -8,7 +8,7 @@ The front door of mynexus.world — a vertical DNA double helix spiraling like a
 - There is no full menu on purpose. The dock has a **⌨ Search Helix** magical keyboard: type a project name and it flies you to that rung.
 - **Easter egg:** climb 8 rungs from wherever you start inside the helix (8th from the top and 8th from the bottom work too) and a faint word floats and spirals in and out of view. Type that word — **IMMORTAL** — into Search Helix and hit GO to open the **Immortal Archive**: all 21 builds in full detail, grouped by Starting / Finishing / Completing. The word is a hidden door for fun only, not security — anyone who reads the page can find it, so nothing private lives behind it.
 - Custom domain: mynexus.world (see Netlify domain settings).
-- Icon: custom NEXUS hexagon (green hex, cyan inner hex, gold N). The favicon is inlined in `index.html` as a PNG data URI; the full icon set (favicon.ico, favicon-192.png, favicon-512.png, apple-touch-icon.png) lives in `workspace/push/nexus-world-hub-icons/` for upload to the repo.
+- Icon: DNA double-helix mark cropped from the mynexus logo (left 864×864 of the logo, green/cyan helix on dark). Icon set: `favicon.ico` (48/32/16), `favicon-192.png`, `favicon-512.png`, `apple-touch-icon.png` (180), `favicon-32.png`, `favicon-16.png`, plus `manifest.json` — all linked in `index.html` with `?v=2`. Source files live in `workspace/push/nexus-world-hub-icons/`.
 
 ## The 21 builds
 
