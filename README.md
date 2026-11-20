@@ -4,6 +4,7 @@ The front door of mynexus.world — a vertical DNA double helix spiraling like a
 
 - Static single-file site (`index.html`), no build step, no backend.
 - Drag to spin, scroll / pinch to zoom, hold **Dive** (or hold the scene) to fly inside the helix.
+- Landing opens on the whole spiral, pulled back, with no project open — tap a node (or Step) to open its card. The control dock starts collapsed to a slim bar (**Hold to Dive In** + **Controls**); tap Controls to expand it, and it opens itself once you dive inside.
 - Inside, step up and down the rungs with **Step ▲ / Step ▼**, or tap a node to open its detail card with a live link.
 - There is no full menu on purpose. The dock has a **⌨ Search Helix** magical keyboard: type a project name and it flies you to that rung.
 - **Easter egg:** climb 8 rungs from wherever you start inside the helix (8th from the top and 8th from the bottom work too) and a faint word floats and spirals in and out of view. Type that word — **IMMORTAL** — into Search Helix and hit GO to open the **Immortal Archive**: all 21 builds in full detail, grouped by Starting / Finishing / Completing. The word is a hidden door for fun only, not security — anyone who reads the page can find it, so nothing private lives behind it.

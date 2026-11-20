@@ -36,6 +36,9 @@
   /* Controls - bottom dock */
   .dock{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:30;width:min(980px,calc(100% - 20px));background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);padding:10px}
   .dock-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .dock .dock-more{display:block;margin-top:8px}
+  .dock.collapsed .dock-more{display:none}
+  .dock-toggle{flex:0 0 auto;min-width:0;white-space:nowrap}
   .btn{flex:1 1 auto;border:1px solid var(--line);background:#0a1622;color:var(--text);padding:10px 12px;font:inherit;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;min-width:104px}
   .btn:active,.btn.active{border-color:var(--green);color:var(--green)}
   .btn.primary{background:var(--green);color:#00150a;border-color:var(--green);font-weight:900}
@@ -153,9 +156,13 @@
   <a class="open" id="dLink" href="#" target="_blank" rel="noopener">Open project ↗</a>
 </aside>
 
-<nav class="dock" aria-label="Helix controls">
-  <div class="dock-row">
+<nav class="dock collapsed" aria-label="Helix controls">
+  <div class="dock-row dock-bar">
     <button class="btn primary" id="diveBtn">Hold to Dive In ↓</button>
+    <button class="btn dock-toggle" id="dockToggle" aria-expanded="false" aria-controls="dockMore">Controls ⌃</button>
+  </div>
+  <div class="dock-more" id="dockMore">
+  <div class="dock-row">
     <button class="btn" id="insideBtn">Go Inside</button>
     <button class="btn pink" id="backBtn">Pull Back</button>
     <button class="btn" id="spinBtn">Pause Spin</button>
@@ -167,10 +174,11 @@
   <div class="dock-row" style="margin-top:8px">
     <div class="zoom-wrap">
       <label for="zoomRange">ZOOM — OUTSIDE ⟷ INSIDE</label>
-      <input type="range" id="zoomRange" min="0" max="100" value="8" aria-label="Zoom from outside the helix to inside it">
+      <input type="range" id="zoomRange" min="0" max="100" value="12" aria-label="Zoom from outside the helix to inside it">
     </div>
   </div>
   <p class="hint"><b>Drag</b> to spin · <b>Hold Dive</b> to fly inside · <b>Step ▲ ▼</b> to climb the rungs once you're in — the 8th rung from wherever you start is hiding something faint. <b>⌨ Search Helix</b> jumps you to a project… or speaks a word, if you caught it. Colors: <span style="color:var(--green)">green</span> / <span style="color:var(--cyan)">cyan</span> / <span style="color:var(--pink)">pink</span> / <span style="color:var(--gold)">gold</span> — NEXUS only.</p>
+  </div>
 </nav>
 
 <section class="kb-panel" id="searchPanel" aria-label="Search the helix">
@@ -330,7 +338,7 @@
   /* ---------- Three scene ---------- */
   var container=document.getElementById('scene');
   var scene=new THREE.Scene();
-  scene.fog=new THREE.FogExp2(0x020409,0.012);
+  scene.fog=new THREE.FogExp2(0x020409,0.010);
   var camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,0.1,300);
   var renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -440,8 +448,8 @@
   helix.add(dust);
 
   /* ---------- Camera rig: orbit outside, dive inside ---------- */
-  function homeDist(){ return innerWidth<innerHeight ? 50 : 34; }
-  var MAXD=56;
+  function homeDist(){ return innerWidth<innerHeight ? 62 : 38; }
+  var MAXD=70;
   var targetDist=homeDist(), dist=homeDist(), rotY=0.6, rotX=0.12, targetRotY=0.6, targetRotX=0.12, camY=0, targetCamY=0;
   var spinning=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var diving=false, selected=-1, flyTarget=null;
@@ -469,6 +477,16 @@
 
   document.getElementById('searchBtn').addEventListener('click',function(){ searchPanel.classList.add('show'); });
   document.getElementById('closeSearch').addEventListener('click',function(){ searchPanel.classList.remove('show'); });
+
+  /* Dock drawer — landing stays clean; controls expand on tap, and open themselves once you dive inside */
+  var dockEl=document.querySelector('.dock'), dockToggle=document.getElementById('dockToggle');
+  function setDock(open){
+    dockEl.classList.toggle('collapsed',!open);
+    dockToggle.textContent=open?'Controls ⌄':'Controls ⌃';
+    dockToggle.setAttribute('aria-expanded',open?'true':'false');
+    placeDetail();
+  }
+  dockToggle.addEventListener('click',function(){ setDock(dockEl.classList.contains('collapsed')); });
 
   /* Step up / down the rungs — the slow climb the clue counts */
   function stepRung(dir){
@@ -546,8 +564,6 @@
     placeDetail();
   });
 
-  selectProject(0,true);
-
   /* ---------- Loop ---------- */
   var clock=new THREE.Clock();
   function animate(){
@@ -558,7 +574,7 @@
       if(diving) setDist(targetDist-dt*16);
       dist+=(targetDist-dist)*0.07;
       var nowInside=dist<11;
-      if(nowInside&&!wasInside) beginJourney();
+      if(nowInside&&!wasInside){ beginJourney(); setDock(true); }
       if(!nowInside&&wasInside){ journey.active=false; }
       wasInside=nowInside;
       rotY+=(targetRotY-rotY)*0.08; rotX+=(targetRotX-rotX)*0.08; camY+=(targetCamY-camY)*0.05;
