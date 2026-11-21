@@ -177,7 +177,7 @@
       <input type="range" id="zoomRange" min="0" max="100" value="12" aria-label="Zoom from outside the helix to inside it">
     </div>
   </div>
-  <p class="hint"><b>Drag</b> to spin · inside, drag up / down to look up / down the whole helix · <b>Tap a node</b> to open it · <b>Hold Dive</b> to fly inside · <b>Step ▲ ▼</b> to climb the rungs once you're in — the 8th rung from wherever you start is hiding something faint. <b>⌨ Search Helix</b> jumps you to a project… or speaks a word, if you caught it. Colors: <span style="color:var(--green)">green</span> / <span style="color:var(--cyan)">cyan</span> / <span style="color:var(--pink)">pink</span> / <span style="color:var(--gold)">gold</span> — NEX•US only.</p>
+  <p class="hint"><b>Drag</b> to spin · inside, drag up / down to look straight up / down · two fingers slide up / down to travel the whole helix · <b>Tap a node</b> to open it · <b>Hold Dive</b> to fly inside · <b>Step ▲ ▼</b> to climb the rungs once you're in — the 8th rung from wherever you start is hiding something faint. <b>⌨ Search Helix</b> jumps you to a project… or speaks a word, if you caught it. Colors: <span style="color:var(--green)">green</span> / <span style="color:var(--cyan)">cyan</span> / <span style="color:var(--pink)">pink</span> / <span style="color:var(--gold)">gold</span> — NEX•US only.</p>
   </div>
 </nav>
 
@@ -456,6 +456,7 @@
   function homeDist(){ return innerWidth<innerHeight ? 62 : 38; }
   var MAXD=70;
   var targetDist=homeDist(), dist=homeDist(), rotY=0.6, rotX=0.12, targetRotY=0.6, targetRotX=0.12, camY=0, targetCamY=0;
+  var pitch=0, targetPitch=0; // inside gaze tilt: 0 = level at the helix, + = straight up, - = straight down
   var spinning=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var diving=false, selected=-1, flyTarget=null;
 
@@ -467,9 +468,9 @@
 
   function setDist(d){ targetDist=THREE.MathUtils.clamp(d,3.2,MAXD); zoomRange.value=distToZoom(targetDist); }
 
-  document.getElementById('insideBtn').addEventListener('click',function(){ setDist(4.2); targetCamY=0; });
+  document.getElementById('insideBtn').addEventListener('click',function(){ setDist(4.2); targetCamY=0; targetPitch=0; });
   document.getElementById('backBtn').addEventListener('click',function(){ setDist(homeDist()); });
-  document.getElementById('resetBtn').addEventListener('click',function(){ setDist(homeDist()); targetRotY=0.6; targetRotX=0.12; targetCamY=0; journey.active=false; journey.origin=-1; journey.last=-1; journey.steps=0; deselect(); });
+  document.getElementById('resetBtn').addEventListener('click',function(){ setDist(homeDist()); targetRotY=0.6; targetRotX=0.12; targetCamY=0; targetPitch=0; journey.active=false; journey.origin=-1; journey.last=-1; journey.steps=0; deselect(); });
   var spinBtn=document.getElementById('spinBtn');
   function syncSpin(){ spinBtn.textContent=spinning?'Pause Spin':'Resume Spin'; spinBtn.classList.toggle('active',!spinning); }
   spinBtn.addEventListener('click',function(){ spinning=!spinning; syncSpin(); }); syncSpin();
@@ -519,10 +520,10 @@
   }
   function deselect(){ selected=-1; detail.classList.remove('show'); nodeMeshes.forEach(function(m){ if(m.userData.main) m.scale.setScalar(1); }); }
   document.getElementById('closeDetail').addEventListener('click',deselect);
-  function flyToRung(i){ var mid=rungData[i].mid; targetCamY=mid.y*0.85; setDist(9.5); }
+  function flyToRung(i){ var mid=rungData[i].mid; targetCamY=mid.y*0.85; targetPitch=0; setDist(9.5); }
 
   /* ---------- Pointer: drag rotate, pinch zoom, tap select, hold canvas dives ---------- */
-  var ray=new THREE.Raycaster(), ptr=new THREE.Vector2(), pointers={}, dragMoved=0, lastPinch=0, downAt=0, holdTimer=null;
+  var ray=new THREE.Raycaster(), ptr=new THREE.Vector2(), pointers={}, dragMoved=0, lastPinch=0, lastMidY=0, downAt=0, holdTimer=null;
   var el=renderer.domElement;
   el.addEventListener('pointerdown',function(e){
     pointers[e.pointerId]={x:e.clientX,y:e.clientY}; dragMoved=0; downAt=performance.now();
@@ -536,7 +537,7 @@
     var ids=Object.keys(pointers);
     if(ids.length===1){
       targetRotY+=dx*0.006;
-      if(dist<11){ targetCamY=THREE.MathUtils.clamp(targetCamY-dy*0.04,-HEIGHT/2,HEIGHT/2); }
+      if(dist<11){ targetPitch=THREE.MathUtils.clamp(targetPitch-dy*0.005,-1.45,1.45); }
       else { targetRotX=THREE.MathUtils.clamp(targetRotX+dy*0.004,-0.55,0.65); }
     }
     else if(ids.length===2){
@@ -544,13 +545,16 @@
       var dNow=Math.hypot(a.x-b.x,a.y-b.y);
       if(lastPinch>0) setDist(targetDist-(dNow-lastPinch)*0.06);
       lastPinch=dNow;
+      var midY=(a.y+b.y)/2;
+      if(lastMidY>0) targetCamY=THREE.MathUtils.clamp(targetCamY-(midY-lastMidY)*0.04,-HEIGHT/2,HEIGHT/2);
+      lastMidY=midY;
     }
   });
   function endPointer(e){
     if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
     if(diving && !diveBtn.classList.contains('active')) diving=false;
     var wasTap=dragMoved<28 && (performance.now()-downAt)<600;
-    delete pointers[e.pointerId]; if(Object.keys(pointers).length<2) lastPinch=0;
+    delete pointers[e.pointerId]; if(Object.keys(pointers).length<2){ lastPinch=0; lastMidY=0; }
     if(wasTap){
       ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1;
       ray.setFromCamera(ptr,camera);
@@ -584,12 +588,13 @@
       dist+=(targetDist-dist)*0.07;
       var nowInside=dist<11;
       if(nowInside&&!wasInside){ beginJourney(); setDock(true); }
-      if(!nowInside&&wasInside){ journey.active=false; }
+      if(!nowInside&&wasInside){ journey.active=false; targetPitch=0; }
       wasInside=nowInside;
-      rotY+=(targetRotY-rotY)*0.08; rotX+=(targetRotX-rotX)*0.08; camY+=(targetCamY-camY)*0.05;
+      rotY+=(targetRotY-rotY)*0.08; rotX+=(targetRotX-rotX)*0.08; camY+=(targetCamY-camY)*0.05; pitch+=(targetPitch-pitch)*0.08;
       var inside=dist<8;
       camera.position.set(Math.sin(rotY)*Math.cos(rotX)*dist, camY+Math.sin(rotX)*dist*0.7+ (inside?0:2), Math.cos(rotY)*Math.cos(rotX)*dist);
-      camera.lookAt(0,camY*0.92,0);
+      if(dist<11){ var fx=-Math.sin(rotY)*Math.cos(pitch), fy=Math.sin(pitch), fz=-Math.cos(rotY)*Math.cos(pitch); camera.lookAt(camera.position.x+fx,camera.position.y+fy,camera.position.z+fz); }
+      else { camera.lookAt(0,camY*0.92,0); }
       if(Object.keys(pointers).length===0) helix.rotation.y=Math.sin(t*0.05)*0.06;
       coreMat.opacity=0.07+0.05*(1-dist/42)+0.02*Math.sin(t*1.4);
       coreLight.intensity=inside?2.2:1.1;
