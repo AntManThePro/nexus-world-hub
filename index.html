@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="manifest" href="manifest.json?v=2">
-<title>NEXUS World — DNA Spiral</title>
+<title>NEX•US World — DNA Spiral</title>
 <style>
   :root{
     --bg:#020409; --panel:#070d16f2; --line:#1e3a4a;
@@ -128,11 +128,11 @@
 </style>
 </head>
 <body>
-<div id="scene" aria-label="Interactive 3D DNA helix containing NEXUS projects"></div>
+<div id="scene" aria-label="Interactive 3D DNA helix containing NEX•US projects"></div>
 
 <header class="topbar">
   <div class="brand">
-    <h1><span class="n">NEXUS</span> <span class="w">WORLD</span></h1>
+    <h1><span class="n">NEX•US</span> <span class="w">WORLD</span></h1>
     <p>DNA Spiral &nbsp;·&nbsp; <b>21 projects inside the helix</b></p>
   </div>
   <div class="live-badge"><span></span>LIVE</div>
@@ -150,7 +150,7 @@
 <aside class="detail" id="detail" aria-live="polite">
   <button class="close" id="closeDetail" aria-label="Close project detail">×</button>
   <div class="kicker" id="dKicker">Rung 01 · Strand A</div>
-  <h2 id="dTitle">NEXUS Eye</h2>
+  <h2 id="dTitle">NEX•US Eye</h2>
   <p id="dDesc"></p>
   <div class="meta"><span class="chip" id="dCat"></span><span class="chip" id="dStatus">● LIVE</span></div>
   <a class="open" id="dLink" href="#" target="_blank" rel="noopener">Open project ↗</a>
@@ -177,7 +177,7 @@
       <input type="range" id="zoomRange" min="0" max="100" value="12" aria-label="Zoom from outside the helix to inside it">
     </div>
   </div>
-  <p class="hint"><b>Drag</b> to spin · <b>Hold Dive</b> to fly inside · <b>Step ▲ ▼</b> to climb the rungs once you're in — the 8th rung from wherever you start is hiding something faint. <b>⌨ Search Helix</b> jumps you to a project… or speaks a word, if you caught it. Colors: <span style="color:var(--green)">green</span> / <span style="color:var(--cyan)">cyan</span> / <span style="color:var(--pink)">pink</span> / <span style="color:var(--gold)">gold</span> — NEXUS only.</p>
+  <p class="hint"><b>Drag</b> to spin · <b>Hold Dive</b> to fly inside · <b>Step ▲ ▼</b> to climb the rungs once you're in — the 8th rung from wherever you start is hiding something faint. <b>⌨ Search Helix</b> jumps you to a project… or speaks a word, if you caught it. Colors: <span style="color:var(--green)">green</span> / <span style="color:var(--cyan)">cyan</span> / <span style="color:var(--pink)">pink</span> / <span style="color:var(--gold)">gold</span> — NEX•US only.</p>
   </div>
 </nav>
 
@@ -214,19 +214,19 @@
   window.addEventListener('unhandledrejection',function(e){ errBox.style.display='block'; errBox.textContent='Error: '+(e.reason&&e.reason.message||e.reason); });
 
   var PROJECTS=[
-    {name:"NEXUS Eye",cat:"SIGHT / CCTV",desc:"Live camera world — thousands of verified CCTV feeds on a globe, city panels, SUN / AURORA / FIRE views.",url:"https://nexus-eye-doublea.netlify.app"},
-    {name:"NEXUS BLE Radar",cat:"SIGNAL / BLUETOOTH",desc:"Tactical Bluetooth LE radar — decode what devices are, follow-me watch, Find mode and Walk View.",url:"https://nexus-ble-radar.netlify.app/"},
-    {name:"NEXUS Fret Trace",cat:"SOUND / GUITAR",desc:"Hear a note, see the fret. Monophonic pitch detection with bend & slide tracking across all 22 frets.",url:"https://antmanthepro.github.io/nexus-fret-trace/"},
-    {name:"NEXUS Duct As-Built",cat:"FIELD / KITCHEN EXHAUST",desc:"Kitchen-exhaust as-builts — one fan path = one asset, measured duct pieces, system map, NFPA 96 checks.",url:"https://antmanthepro.github.io/duct/"},
-    {name:"NEXUS Detect",cat:"SECURITY / THREAT INTEL",desc:"Public-catalog threat detector scoring the CISA Known Exploited Vulnerabilities snapshot.",url:"https://antmanthepro.github.io/nexus-detect/"},
-    {name:"NEXUS OSINT Vault",cat:"ARCHIVE / OSINT",desc:"The locked vault — SHELF clone list, LINKS, BENCH and CASE drag board over the full repo inventory.",url:"https://antmanthepro.github.io/osint/"},
-    {name:"NEXUS Platform",cat:"TOOLS / SUITE",desc:"Six vanilla tools in one platform — the utility bench of the NEXUS world.",url:"https://nexus-platform-doublea.netlify.app"},
-    {name:"NEXUS Playground",cat:"TOOLS / REACT LAB",desc:"Preview React, HTML and library builds live on your phone — the online playground.",url:"https://nexus-playground-doublea.netlify.app"},
+    {name:"NEX•US Eye",cat:"SIGHT / CCTV",desc:"Live camera world — thousands of verified CCTV feeds on a globe, city panels, SUN / AURORA / FIRE views.",url:"https://nexus-eye-doublea.netlify.app"},
+    {name:"NEX•US BLE Radar",cat:"SIGNAL / BLUETOOTH",desc:"Tactical Bluetooth LE radar — decode what devices are, follow-me watch, Find mode and Walk View.",url:"https://nexus-ble-radar.netlify.app/"},
+    {name:"NEX•US Fret Trace",cat:"SOUND / GUITAR",desc:"Hear a note, see the fret. Monophonic pitch detection with bend & slide tracking across all 22 frets.",url:"https://antmanthepro.github.io/nexus-fret-trace/"},
+    {name:"NEX•US Duct As-Built",cat:"FIELD / KITCHEN EXHAUST",desc:"Kitchen-exhaust as-builts — one fan path = one asset, measured duct pieces, system map, NFPA 96 checks.",url:"https://antmanthepro.github.io/duct/"},
+    {name:"NEX•US Detect",cat:"SECURITY / THREAT INTEL",desc:"Public-catalog threat detector scoring the CISA Known Exploited Vulnerabilities snapshot.",url:"https://antmanthepro.github.io/nexus-detect/"},
+    {name:"NEX•US OSINT Vault",cat:"ARCHIVE / OSINT",desc:"The locked vault — SHELF clone list, LINKS, BENCH and CASE drag board over the full repo inventory.",url:"https://antmanthepro.github.io/osint/"},
+    {name:"NEX•US Platform",cat:"TOOLS / SUITE",desc:"Six vanilla tools in one platform — the utility bench of the NEX•US world.",url:"https://nexus-platform-doublea.netlify.app"},
+    {name:"NEX•US Playground",cat:"TOOLS / REACT LAB",desc:"Preview React, HTML and library builds live on your phone — the online playground.",url:"https://nexus-playground-doublea.netlify.app"},
     {name:"IoT Network Dashboard",cat:"NETWORK / LAN",desc:"Reads real scan files — host inventory, high-risk port flags, baseline diffs and a regenerable report.",url:"https://iot-network-dashboard.netlify.app"},
-    {name:"BREW.NEXUS",cat:"MAKER / HOME BREW",desc:"Home brew creator — Rigs, Flash-Chill, Pantry and a full cost engine for every batch.",url:"https://antmanthepro.github.io/brew-nexus/"},
-    {name:"Shake Lab",cat:"MAKER / LAB",desc:"Shake Lab v2.2 — live and canonical, back in the helix alongside BREW.NEXUS.",url:"https://nexus-shake-lab.netlify.app/"},
+    {name:"BREW.NEX•US",cat:"MAKER / HOME BREW",desc:"Home brew creator — Rigs, Flash-Chill, Pantry and a full cost engine for every batch.",url:"https://antmanthepro.github.io/brew-nexus/"},
+    {name:"Shake Lab",cat:"MAKER / LAB",desc:"Shake Lab v2.2 — live and canonical, back in the helix alongside BREW.NEX•US.",url:"https://nexus-shake-lab.netlify.app/"},
     {name:"My KEF",cat:"FIELD / TRAINING",desc:"Kitchen exhaust field knowledge, live on the hub — training-grade reference for the work.",url:"https://my-kef.netlify.app/"},
-    {name:"NEXUS Archive v3.1",cat:"ARCHIVE",desc:"The deep archive of the NEXUS world — builds, history and the record that outlives one night.",url:"https://nexus-archive-v3.netlify.app/"},
+    {name:"NEX•US Archive v3.1",cat:"ARCHIVE",desc:"The deep archive of the NEX•US world — builds, history and the record that outlives one night.",url:"https://nexus-archive-v3.netlify.app/"},
     {name:"Hood Boss Ecosystem Hub",cat:"WORK / ECOSYSTEM",desc:"The Hood Boss ecosystem in one hub — training, lead tools and field systems linked together.",url:"https://hood-boss-ecosystem-hub.netlify.app/"},
     {name:"KJV Terminal Quiet",cat:"QUIET / SCRIPTURE",desc:"A quiet terminal for the KJV — scripture without the noise.",url:"https://kjv-terminal-quiet.netlify.app/"},
     {name:"Field Crew Event Dashboard",cat:"FIELD / CREWS",desc:"Crew events at a glance — who, where and what's happening across the field operation.",url:"https://field-crew-event-dashboard.netlify.app/"},
@@ -237,7 +237,7 @@
     {name:"AntMan Protocol Card",cat:"IDENTITY / PROTOCOL",desc:"Level 4 / Legendary. The 5-step AntMan Protocol on a dark personnel-file card — not perfect, just real.",url:"https://antman-protocol-card.netlify.app/"}
   ];
   var COLORS=[0x00ff88,0x00e5ff,0xff2d95,0xffc832];
-  var COLOR_NAMES=["NEXUS GREEN","NEXUS CYAN","NEXUS PINK","NEXUS GOLD"];
+  var COLOR_NAMES=["NEX•US GREEN","NEX•US CYAN","NEX•US PINK","NEX•US GOLD"];
   var SECRET="IMMORTAL";
   // Where each build stands: STARTING / FINISHING / COMPLETING
   var PHASES=["COMPLETING","COMPLETING","FINISHING","COMPLETING","FINISHING","COMPLETING","COMPLETING","FINISHING","COMPLETING","STARTING","COMPLETING","FINISHING","FINISHING","FINISHING","COMPLETING","FINISHING","STARTING","STARTING","STARTING","FINISHING","COMPLETING"];
@@ -293,7 +293,7 @@
     kbResults.innerHTML=''; kbMsg.textContent='';
     if(query===SECRET){ kbMsg.textContent='✦ THE WORD IS SPOKEN — THE ARCHIVE OPENS ✦'; return; }
     if(!query) return;
-    var hits=PROJECTS.map(function(p,i){return {p:p,i:i};}).filter(function(h){ return h.p.name.toUpperCase().indexOf(query)>-1; });
+    var hits=PROJECTS.map(function(p,i){return {p:p,i:i};}).filter(function(h){ return h.p.name.toUpperCase().replace(/•/g,'').indexOf(query)>-1; });
     if(!hits.length){ kbMsg.textContent='Nothing in the helix answers to that… yet.'; return; }
     hits.slice(0,6).forEach(function(h){
       var b=document.createElement('button'); b.className='kb-result';
@@ -306,7 +306,7 @@
   }
   function kbGo(){
     if(query===SECRET){ searchPanel.classList.remove('show'); openArchive(); return; }
-    var hits=PROJECTS.map(function(p,i){return {p:p,i:i};}).filter(function(h){ return h.p.name.toUpperCase().indexOf(query)>-1; });
+    var hits=PROJECTS.map(function(p,i){return {p:p,i:i};}).filter(function(h){ return h.p.name.toUpperCase().replace(/•/g,'').indexOf(query)>-1; });
     if(hits.length){ searchPanel.classList.remove('show'); selectProject(hits[0].i,true); flyToRung(hits[0].i); }
   }
   var kbKeys=document.getElementById('kbKeys');
