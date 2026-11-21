@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEX•US Pen Testing — All-Access Guide</title>
+<meta name="description" content="Authorized-only pen-testing guide. Rule Zero first: test only systems you own, or systems you have written permission to test.">
+<link rel="icon" href="favicon.ico?v=1">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=1">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png?v=1">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png?v=1">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=1">
+<link rel="manifest" href="manifest.json?v=1">
+<style>
+  :root{--green:#00ff87;--cyan:#60efff;--pink:#ff0080;--gold:#ffcc00;--bg:#030508;--dark:#07091a;--panel:#0b0e20;--border:#141f40;--muted:#8aa0c2;--text:#e8f0ff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Courier New",Courier,monospace;line-height:1.65}
+  a{color:var(--cyan)}
+  header{padding:28px 20px 18px;background:var(--dark);border-bottom:1px solid var(--green)}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+  h1{color:var(--green);font-size:26px;letter-spacing:2px;margin:6px 0;text-shadow:0 0 22px rgba(0,255,135,.35)}
+  h2{color:var(--cyan);border-bottom:1px solid var(--border);padding-bottom:6px;margin-top:42px}
+  h3{color:var(--gold)}
+  .kicker{color:var(--gold);font-size:12px;letter-spacing:2px}
+  .rulezero{background:#2a0a1a;border:1px solid var(--pink);padding:16px;margin:22px 0}
+  .rulezero b{color:var(--pink)}
+  .toc{background:var(--panel);border:1px solid var(--border);padding:16px 20px;margin:22px 0}
+  .toc a{display:block;padding:2px 0;color:var(--text);text-decoration:none}
+  .toc a:hover{color:var(--green)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+  th{color:var(--gold);background:var(--dark)}
+  code,pre{background:var(--dark);border:1px solid var(--border);padding:2px 6px}
+  pre{padding:14px;overflow-x:auto;white-space:pre-wrap}
+  ul.check{list-style:none;padding-left:4px}
+  ul.check li{padding:4px 0}
+  ul.check li::before{content:"☐ ";color:var(--green)}
+  .shield{cursor:pointer;font-size:34px;user-select:none}
+  .egg{display:none;background:var(--panel);border:1px solid var(--gold);padding:12px;margin-top:10px;color:var(--gold)}
+  footer{border-top:1px solid var(--border);margin-top:48px;padding-top:16px;color:var(--muted);font-size:12px}
+  .fineprint{font-size:11px;color:var(--muted)}
+  @media print{body{background:#fff;color:#000}header{background:#fff}h1,h2{color:#000} .shield,.egg{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap" style="padding-bottom:0">
+    <div class="kicker">NEX•US · SECURITY / GUIDE · RUNG 22 (PLANNED)</div>
+    <h1>NEX•US PEN TESTING — ALL-ACCESS GUIDE</h1>
+    <p>Test every access level you are authorized to hold, one at a time, and prove what each level can and cannot do.</p>
+    <p><a href="https://mynexus.world/">← Back to the hub — mynexus.world</a> &nbsp;·&nbsp; Planned live: https://mynexus.world/pen-testing-guide/</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="rulezero">
+    <b>RULE ZERO, BEFORE ANYTHING ELSE:</b> test only systems you own, or systems you have written permission to test, in writing, from the owner. No permission, no test. That rule is what separates a pen test from an attack, and it is what keeps you, your crew, and your clients safe.
+    <p>“All access” in this guide does not mean “break into everything.” It means test <b>every access level you are authorized to hold</b> — Unauthenticated visitor, Technician / standard user, Manager / team lead, Admin / owner — one at a time. If a level can see, change, or export something it should not, that is a finding — even if you are the owner testing your own site.</p>
+  </div>
+
+  <nav class="toc" aria-label="Contents">
+    <b style="color:var(--gold)">CONTENTS</b>
+    <a href="#s1">1. What “immortality” means here</a>
+    <a href="#s2">2. Roles, not a permanent roster</a>
+    <a href="#s3">3. Rules of Engagement (ROE)</a>
+    <a href="#s4">4. The test, phase by phase</a>
+    <a href="#s5">5. Tools — the boring, standard ones first</a>
+    <a href="#s6">6. Severity — score it the same way every time</a>
+    <a href="#s7">7. Findings template</a>
+    <a href="#s8">8. Fix, retest, close</a>
+    <a href="#s9">9. Hard boundaries</a>
+    <a href="#s10">10. Quick start — your first authorized run</a>
+  </nav>
+
+  <h2 id="s1">1. What “immortality” means here</h2>
+  <p>Not invulnerability, and not a promise no one will ever find a flaw. Immortality here is durability:</p>
+  <ol>
+    <li>The test is written down, so it survives one person, one night, one phone.</li>
+    <li>Every finding has evidence, a fix, and a retest.</li>
+    <li>The next test starts from the last report, not from zero.</li>
+    <li>Secrets, once exposed, are treated as compromised and rotated — deleting them from the current file is not enough if they are in history, in a download, or in a screenshot.</li>
+  </ol>
+  <p>Build the system so the knowledge outlives the test. That is the whole point of this guide.</p>
+
+  <h2 id="s2">2. Roles, not a permanent roster</h2>
+  <p>Run each test as one consolidated report to the owner. Assign a checker to each hat below for that test. You do not need a permanent team to use the hats — you need a clean handoff and one person consolidating the results.</p>
+  <table>
+    <tr><th>Hat</th><th>Job on this test</th></tr>
+    <tr><td>Glass</td><td>See, act, verify. Never call it fixed without evidence.</td></tr>
+    <tr><td>Lens</td><td>The detail everyone else scrolled past: headers, storage, small print.</td></tr>
+    <tr><td>Mesh</td><td>Score it. Ten opinions in, one severity out.</td></tr>
+    <tr><td>Forge</td><td>Ship the fix clean. No secrets in chat, code, or screenshots.</td></tr>
+    <tr><td>Kernel</td><td>Tell the story: what breaks, for whom, and what it costs if ignored.</td></tr>
+    <tr><td>Browlser</td><td>Hands on the machine. Click it, do not just read about it.</td></tr>
+    <tr><td>Operations</td><td>Staging first. Preview before anything touches production.</td></tr>
+    <tr><td>PIX Bridge</td><td>Patient watcher. Never type a password or code alone.</td></tr>
+  </table>
+  <p>Lil Ant’s job in this model is the same as in FieldPulse work: consolidate the checkers into one exceptions report, not a dump of everything that was fine.</p>
+
+  <h2 id="s3">3. Rules of Engagement (ROE) — fill this in before you start</h2>
+  <p>Copy this block into every test report. No ROE, no test.</p>
+  <ul>
+    <li><b>Target(s), exactly:</b> e.g. your own staging copy of a site, your own repo, your own device in a lab.</li>
+    <li><b>Out of scope, exactly:</b> employer systems, client systems, other people’s accounts, live production data, other people’s devices. If it is not listed as in scope, it is out of scope.</li>
+    <li><b>Owner permission:</b> name, date, and where the written permission lives.</li>
+    <li><b>Time window:</b> start / stop, timezone.</li>
+    <li><b>Allowed:</b> read-only checks, role tests in staging, configuration review.</li>
+    <li><b>Not allowed:</b> destructive tests, denial-of-service, password guessing against live accounts, exfiltrating real crew/client data, testing a system you do not own, social engineering real people without their consent.</li>
+    <li><b>Stop conditions:</b> stop immediately on: a live account lockout, a real data exposure, a system going down, or any sign you are outside scope. Report it, do not push through it.</li>
+    <li><b>Evidence handling:</b> screenshots and logs go in the test folder only. Redact passwords, codes, tokens, and personal data before they go in a report.</li>
+  </ul>
+
+  <h2 id="s4">4. The test, phase by phase</h2>
+  <h3>Phase 0 — Inventory (passive only)</h3>
+  <ul>
+    <li>List every asset in scope: domains, repos, Netlify sites, pages, forms, login gates, and data stores (including localStorage-only apps).</li>
+    <li>Note what each asset is for, who should access it, and what data it holds.</li>
+    <li>Check public exposure: is a “private” site actually returning a login gate, or loading publicly? Verify live, do not assume a setting worked.</li>
+    <li>Check repo history for your own projects: old secrets, old gates, old links. Treat anything once public as known, and rotate it rather than just deleting it.</li>
+  </ul>
+  <h3>Phase 1 — Unauthenticated access</h3>
+  <p>Test as a visitor with no login, in staging first:</p>
+  <ul class="check">
+    <li>Can a visitor load a page, file, or export that should need a login?</li>
+    <li>Do direct URLs bypass a gate that the navigation hides?</li>
+    <li>Are old versions, old files, or old links still reachable?</li>
+    <li>Does an error page leak paths, versions, or internal details?</li>
+    <li>Are security headers present on the live response? Note what is missing, do not just assume the platform handles it.</li>
+  </ul>
+  <h3>Phase 2 — Technician / standard user access</h3>
+  <p>Log in as the lowest authorized role you own:</p>
+  <ul class="check">
+    <li>Can this role see manager tools, manager links, or admin pages?</li>
+    <li>Can it edit, delete, or export records belonging to someone else?</li>
+    <li>Can it change its own role, or a URL parameter, to gain a higher role?</li>
+    <li>Are saved records tied to stable IDs, or do they shift when content changes?</li>
+    <li>Does an export include fields this role should not see?</li>
+  </ul>
+  <h3>Phase 3 — Manager / team lead access</h3>
+  <p>Repeat Phase 2 as a manager, and check the boundary both ways:</p>
+  <ul class="check">
+    <li>Can a manager see admin-only settings, other teams’ private data, or owner controls?</li>
+    <li>Can a manager share a private link in a way that makes it public?</li>
+    <li>Is there a real sign-in behind manager tools, or only a code in a public file? A client-side code in a public file is not authentication.</li>
+    <li>When a manager leaves the team, is their access actually removed? Test the removal, do not just check a setting.</li>
+  </ul>
+  <h3>Phase 4 — Admin / owner access</h3>
+  <ul class="check">
+    <li>Is admin access protected by a real team/org login, not a shared password in a file or chat?</li>
+    <li>Are admin actions logged? Can you prove who changed what, and when?</li>
+    <li>Can an admin accidentally (or deliberately) expose a private site by flipping one setting? Note the setting and the check that catches it.</li>
+    <li>Are backups and exports handled like production data, not like throwaway files?</li>
+  </ul>
+  <h3>Phase 5 — Web app checks (your own apps, staging first)</h3>
+  <ul>
+    <li><b>Input handling:</b> unexpected input in forms, search, and uploads in staging. Does it break, reflect, or get stored unsafely?</li>
+    <li><b>Storage:</b> what lives in localStorage, in URLs, or in exported files? Is any of it a secret, a code, or personal data that should not be there?</li>
+    <li><b>Secrets in code:</b> search your own repos for keys, tokens, passwords, and old gates. Rotate what you find.</li>
+    <li><b>Dependencies and links:</b> outdated libraries, third-party scripts, and links that go somewhere you did not intend.</li>
+    <li><b>Session handling:</b> does logging out actually end the session in your test? Does a shared device keep the next person logged in?</li>
+  </ul>
+  <h3>Phase 6 — Devices, Bluetooth, and hardware (lab only)</h3>
+  <p>Only your own devices, only in a lab, never other people’s devices:</p>
+  <ul class="check">
+    <li>What does your device broadcast, and to whom? Check it, do not guess.</li>
+    <li>Does a test app leak a name, identifier, or location it should not?</li>
+    <li>Are test features clearly labeled as practice, so no one mistakes a simulation for a real finding?</li>
+    <li>No identifying, tracking, or following real people. A lab device you own is the test subject.</li>
+  </ul>
+  <h3>Phase 7 — People and process (with consent only)</h3>
+  <ul>
+    <li>Phishing or social tests only with written consent from everyone involved, and with a training purpose, not a gotcha.</li>
+    <li>Test the human process too: who gets told when a finding lands, how fast, and who can stop a rollout?</li>
+    <li>Test onboarding and offboarding: new person gets only what they need, departing person loses access promptly.</li>
+  </ul>
+
+  <h2 id="s5">5. Tools — use the boring, standard ones first</h2>
+  <p>You do not need exotic tools to run a good test. Start here, in a lab or staging:</p>
+  <ul>
+    <li>Browser dev tools — network, storage, headers, direct-URL checks</li>
+    <li>A proxy / scanner for your own staging site (OWASP ZAP, Burp Community)</li>
+    <li>A network scanner for your own lab network (Nmap)</li>
+    <li>A secret scanner for your own repos</li>
+    <li>A checklist and a findings log — the most underrated tool in the list</li>
+  </ul>
+  <p>Do not point scanners at live systems you do not own, and do not run aggressive scans against production. Staging first, always.</p>
+
+  <h2 id="s6">6. Severity — score it the same way every time</h2>
+  <table>
+    <tr><th>Severity</th><th>Meaning</th></tr>
+    <tr><td>Critical</td><td>Unauthenticated access to private data or admin control, or a live secret exposed. Fix and retest before any handover.</td></tr>
+    <tr><td>High</td><td>An authorized low role can reach a higher role’s data or controls, or a private site is actually public.</td></tr>
+    <tr><td>Medium</td><td>A misconfiguration or weak control that needs another step to matter, but is real and repeatable.</td></tr>
+    <tr><td>Low</td><td>A hardening gap: missing header, verbose error, outdated library with no reachable path in your test. Note it, schedule it.</td></tr>
+    <tr><td>Info</td><td>An observation for the next test, not a finding to chase tonight.</td></tr>
+  </table>
+  <p>If you cannot reproduce it, it is not a finding yet. It is a note for the next test, with the steps you tried.</p>
+
+  <h2 id="s7">7. Findings template — copy this for every finding</h2>
+  <pre>Title:
+Severity: Critical / High / Medium / Low / Info
+Access level tested: Unauthenticated / Technician / Manager / Admin
+Target (staging or lab, exact):
+Steps to reproduce:
+  1.
+  2.
+  3.
+Expected:
+Actual:
+Evidence (redacted screenshot / log / URL, no secrets):
+Impact (Kernel line — who is affected, what breaks):
+Fix:
+Retest result: Pass / Fail, date, checker:</pre>
+  <p>One finding per template. A report with ten clear findings beats a report with fifty vague ones.</p>
+
+  <h2 id="s8">8. Fix, retest, close — the loop that makes it durable</h2>
+  <ol>
+    <li>Fix in staging, not by editing live by hand.</li>
+    <li>Retest the exact steps from the findings template.</li>
+    <li>Check the fix did not break the role below it — a manager fix that locks out technicians is a new finding.</li>
+    <li>Only then promote to production, and re-verify live.</li>
+    <li>Log it: finding, fix, retest date, and who checked it.</li>
+    <li>Next test starts from this log. That is how the work survives past one night.</li>
+  </ol>
+
+  <h2 id="s9">9. Hard boundaries — do not cross these, even with good intent</h2>
+  <ul>
+    <li>Do not test FieldPulse, your employer’s systems, or any client system unless you have that owner’s written permission for that system, that window, and those tests.</li>
+    <li>Do not test other people’s Netlify sites, accounts, cameras, or devices.</li>
+    <li>Do not use, share, or publish credentials, codes, or tokens you find in a test. Rotate them, redact them, report them to the owner through a private channel.</li>
+    <li>Do not keep testing after a stop condition. Report and stop.</li>
+    <li>Do not call a site secure, compliant, or certified because one test passed. Say what you tested, when, and what is still untested.</li>
+  </ul>
+
+  <h2 id="s10">10. Quick start — your first authorized run</h2>
+  <ol>
+    <li>Pick one system you own. Copy it to staging.</li>
+    <li>Fill in the ROE block in Section 3.</li>
+    <li>Run Phases 1–4, one access level at a time.</li>
+    <li>Write up only the exceptions, with the template in Section 7.</li>
+    <li>Fix, retest, log it.</li>
+    <li>Bring the consolidated report back to Lil Ant, and the next run gets shorter, sharper, and harder to fool.</li>
+  </ol>
+  <p>That loop — scope, test, fix, retest, log — is the whole system. Run it, and the knowledge does not die with the test.</p>
+
+  <footer>
+    <p><span class="shield" id="eggShield" title="Tap 3 times">🛡</span> <span id="eggHint">Tap the shield 3 times. It is guarding something.</span></p>
+    <div class="egg" id="eggBox">The pen tester’s real superpower is a boring checklist and a signed ROE. No cape required.</div>
+    <p class="fineprint">Fine print, goofy edition: the only backdoor in this guide is the one you close in Phase 4. If you found this egg, you read the scope — that already puts you ahead of most visitors. This page is a guide for authorized testing only. It is not a demo, it contains no fake findings, and it will not test anything for you.</p>
+    <p class="fineprint">NEX•US Pen Testing Guide · Staged 2026-11-21 · Source: nexus-pen-testing-all-access-guide.md · Not live until Anthony approves the push.</p>
+  </footer>
+</main>
+<script>
+  (function(){
+    var n=0, s=document.getElementById('eggShield'), b=document.getElementById('eggBox'), h=document.getElementById('eggHint');
+    s.addEventListener('click', function(){
+      n++;
+      if(n>=3){ b.style.display='block'; h.textContent='Egg found. The checklist was the superpower all along.'; }
+      else { h.textContent='Tap the shield '+(3-n)+' more time'+(3-n===1?'':'s')+'.'; }
+    });
+  })();
+</script>
+</body>
+</html>

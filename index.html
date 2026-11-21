@@ -133,7 +133,7 @@
 <header class="topbar">
   <div class="brand">
     <h1><span class="n">NEX•US</span> <span class="w">WORLD</span></h1>
-    <p>DNA Spiral &nbsp;·&nbsp; <b>21 projects inside the helix</b></p>
+    <p>DNA Spiral &nbsp;·&nbsp; <b>22 projects inside the helix</b></p>
   </div>
   <div class="live-badge"><span></span>LIVE</div>
 </header>
@@ -197,7 +197,7 @@
 
 <section class="index-panel" id="archivePanel" aria-label="Unlocked archive of all builds">
   <div class="index-head">
-    <h2>THE IMMORTAL ARCHIVE — <span>ALL 21 BUILDS</span></h2>
+    <h2>THE IMMORTAL ARCHIVE — <span>ALL 22 BUILDS</span></h2>
     <button class="btn" id="closeArchive" style="flex:0 0 auto">Close ✕</button>
   </div>
   <p class="archive-intro">The full record, held just at bay until the word is spoken. Every build in the helix, grouped by where it stands — <b style="color:var(--gold)">starting</b>, <b style="color:var(--cyan)">finishing</b>, or <b style="color:var(--green)">completing</b> — with its rung, category and live link.</p>
@@ -234,13 +234,14 @@
     {name:"Terminal Bible",cat:"TERMINAL / SCRIPTURE",desc:"Terminal Bible v4 — the theatrical gate is a show, not a real credential. The book is the point.",url:"https://terminal-bible.netlify.app/"},
     {name:"Principal Engineer",cat:"MIND / STANDARD",desc:"The principal-engineer standard — how the work gets judged, documented and shipped clean.",url:"https://principal-engineer.netlify.app/"},
     {name:"Service Manager Playbook",cat:"WORK / MANAGEMENT",desc:"The most complete service-manager playbook — the picked variant, no password anywhere.",url:"https://service-manager-playbook.netlify.app/"},
-    {name:"AntMan Protocol Card",cat:"IDENTITY / PROTOCOL",desc:"Level 4 / Legendary. The 5-step AntMan Protocol on a dark personnel-file card — not perfect, just real.",url:"https://antman-protocol-card.netlify.app/"}
+    {name:"AntMan Protocol Card",cat:"IDENTITY / PROTOCOL",desc:"Level 4 / Legendary. The 5-step AntMan Protocol on a dark personnel-file card — not perfect, just real.",url:"https://antman-protocol-card.netlify.app/"},
+    {name:"NEX•US Pen Testing Guide",cat:"SECURITY / GUIDE",desc:"Authorized-only pen-testing guide — Rule Zero first, test every access level you own, one at a time, in staging.",url:"https://mynexus.world/pen-testing-guide/"}
   ];
   var COLORS=[0x00ff88,0x00e5ff,0xff2d95,0xffc832];
   var COLOR_NAMES=["NEX•US GREEN","NEX•US CYAN","NEX•US PINK","NEX•US GOLD"];
   var SECRET="IMMORTAL";
   // Where each build stands: STARTING / FINISHING / COMPLETING
-  var PHASES=["COMPLETING","COMPLETING","FINISHING","COMPLETING","FINISHING","COMPLETING","COMPLETING","FINISHING","COMPLETING","STARTING","COMPLETING","FINISHING","FINISHING","FINISHING","COMPLETING","FINISHING","STARTING","STARTING","STARTING","FINISHING","COMPLETING"];
+  var PHASES=["COMPLETING","COMPLETING","FINISHING","COMPLETING","FINISHING","COMPLETING","COMPLETING","FINISHING","COMPLETING","STARTING","COMPLETING","FINISHING","FINISHING","FINISHING","COMPLETING","FINISHING","STARTING","STARTING","STARTING","FINISHING","COMPLETING","COMPLETING"];
 
   /* ---------- The climb: 8 rungs from wherever you begin inside ---------- */
   var ghost=document.getElementById('ghostWord');
@@ -508,7 +509,7 @@
   var detail=document.getElementById('detail');
   function selectProject(i,show){
     selected=i; registerVisit(i); var p=PROJECTS[i];
-    document.getElementById('dKicker').textContent='Rung '+String(i+1).padStart(2,'0')+' of 21 · '+COLOR_NAMES[i%4]+' node';
+    document.getElementById('dKicker').textContent='Rung '+String(i+1).padStart(2,'0')+' of 22 · '+COLOR_NAMES[i%4]+' node';
     document.getElementById('dTitle').textContent=p.name;
     document.getElementById('dDesc').textContent=p.desc;
     document.getElementById('dCat').textContent=p.cat;
