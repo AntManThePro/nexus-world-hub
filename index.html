@@ -177,7 +177,7 @@
       <input type="range" id="zoomRange" min="0" max="100" value="12" aria-label="Zoom from outside the helix to inside it">
     </div>
   </div>
-  <p class="hint"><b>Drag</b> to spin · <b>Hold Dive</b> to fly inside · <b>Step ▲ ▼</b> to climb the rungs once you're in — the 8th rung from wherever you start is hiding something faint. <b>⌨ Search Helix</b> jumps you to a project… or speaks a word, if you caught it. Colors: <span style="color:var(--green)">green</span> / <span style="color:var(--cyan)">cyan</span> / <span style="color:var(--pink)">pink</span> / <span style="color:var(--gold)">gold</span> — NEX•US only.</p>
+  <p class="hint"><b>Drag</b> to spin · inside, drag up / down to look up / down the whole helix · <b>Tap a node</b> to open it · <b>Hold Dive</b> to fly inside · <b>Step ▲ ▼</b> to climb the rungs once you're in — the 8th rung from wherever you start is hiding something faint. <b>⌨ Search Helix</b> jumps you to a project… or speaks a word, if you caught it. Colors: <span style="color:var(--green)">green</span> / <span style="color:var(--cyan)">cyan</span> / <span style="color:var(--pink)">pink</span> / <span style="color:var(--gold)">gold</span> — NEX•US only.</p>
   </div>
 </nav>
 
@@ -381,7 +381,7 @@
   // Helix group
   var helix=new THREE.Group(); scene.add(helix);
   var RUNGS=PROJECTS.length, HEIGHT=30, TURNS=3.1;
-  var nodeMeshes=[], rungData=[];
+  var nodeMeshes=[], hitMeshes=[], rungData=[];
 
   function helixPoint(i,side){
     var t=i/(RUNGS-1);
@@ -430,6 +430,11 @@
       if(isMain){
         var halo=new THREE.Mesh(haloGeo,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.14,depthWrite:false}));
         halo.position.copy(p); halo.userData={index:i,halo:true}; helix.add(halo); nodeMeshes.push(halo);
+      }
+      if(isMain){
+        // Fat invisible tap target — a finger misses a 0.42 node, it doesn't miss this
+        var hit=new THREE.Mesh(new THREE.SphereGeometry(1.0,12,10),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
+        hit.position.copy(p); hit.userData={index:i,hit:true}; helix.add(hit); hitMeshes.push(hit);
       }
     });
     rungData.push({a:a,b:b,mid:a.clone().add(b).multiplyScalar(0.5)});
@@ -521,7 +526,7 @@
   var el=renderer.domElement;
   el.addEventListener('pointerdown',function(e){
     pointers[e.pointerId]={x:e.clientX,y:e.clientY}; dragMoved=0; downAt=performance.now();
-    holdTimer=setTimeout(function(){ if(dragMoved<6) diving=true; },420);
+    holdTimer=setTimeout(function(){ if(dragMoved<6) diving=true; },600);
   });
   el.addEventListener('pointermove',function(e){
     var p=pointers[e.pointerId]; if(!p) return;
@@ -529,7 +534,11 @@
     dragMoved+=Math.abs(dx)+Math.abs(dy);
     if(dragMoved>6 && holdTimer){ clearTimeout(holdTimer); holdTimer=null; if(diving && !diveBtn.classList.contains('active')) diving=false; }
     var ids=Object.keys(pointers);
-    if(ids.length===1){ targetRotY+=dx*0.006; targetRotX=THREE.MathUtils.clamp(targetRotX+dy*0.004,-0.55,0.65); }
+    if(ids.length===1){
+      targetRotY+=dx*0.006;
+      if(dist<11){ targetCamY=THREE.MathUtils.clamp(targetCamY-dy*0.04,-HEIGHT/2,HEIGHT/2); }
+      else { targetRotX=THREE.MathUtils.clamp(targetRotX+dy*0.004,-0.55,0.65); }
+    }
     else if(ids.length===2){
       var a=pointers[ids[0]], b=pointers[ids[1]];
       var dNow=Math.hypot(a.x-b.x,a.y-b.y);
@@ -540,12 +549,12 @@
   function endPointer(e){
     if(holdTimer){ clearTimeout(holdTimer); holdTimer=null; }
     if(diving && !diveBtn.classList.contains('active')) diving=false;
-    var wasTap=dragMoved<8 && (performance.now()-downAt)<420;
+    var wasTap=dragMoved<28 && (performance.now()-downAt)<600;
     delete pointers[e.pointerId]; if(Object.keys(pointers).length<2) lastPinch=0;
     if(wasTap){
       ptr.x=(e.clientX/innerWidth)*2-1; ptr.y=-(e.clientY/innerHeight)*2+1;
       ray.setFromCamera(ptr,camera);
-      var hits=ray.intersectObjects(nodeMeshes,false);
+      var hits=ray.intersectObjects(hitMeshes,false);
       if(hits.length) { selectProject(hits[0].object.userData.index,true); flyToRung(hits[0].object.userData.index); }
     }
   }
@@ -581,7 +590,7 @@
       var inside=dist<8;
       camera.position.set(Math.sin(rotY)*Math.cos(rotX)*dist, camY+Math.sin(rotX)*dist*0.7+ (inside?0:2), Math.cos(rotY)*Math.cos(rotX)*dist);
       camera.lookAt(0,camY*0.92,0);
-      helix.rotation.y=Math.sin(t*0.05)*0.06;
+      if(Object.keys(pointers).length===0) helix.rotation.y=Math.sin(t*0.05)*0.06;
       coreMat.opacity=0.07+0.05*(1-dist/42)+0.02*Math.sin(t*1.4);
       coreLight.intensity=inside?2.2:1.1;
       // dust climbs
