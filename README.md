@@ -1,4 +1,4 @@
-# NEX•US World Hub — DNA Spiral
+# NEX•US World Hub
 
 The front door of mynexus.world — a vertical DNA double helix spiraling like a tornado in space, with 22 NEXperimental builds as rungs inside it. In NEX•US green / cyan / pink / gold.
 
